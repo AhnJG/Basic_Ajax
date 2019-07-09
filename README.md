@@ -127,4 +127,19 @@ function appendNode()
   parent.appendChild(newItem);
 }
 ```
+### 노드의 생성
+생설한 노드의 종류에 다라 다음과 같은 메소드를 사용할 수 있다
+1. createElement() : 새로운 요소 노드 생성
+2. createAttribute() : 새로운 속성 노드 생성
+3. createTextNode() : 새로운 텍스트 노드 생성
 
+#### createElement() 예제
+```javascript
+funciton createNode()
+{
+  var criteriaNode = document.getElementById("text"); // 기준이 되는 요소, 아이디가 text인 요소를 선택
+  var newNode = document.createElement("p"); // 새로운 <p> 요소를 생성
+  newNode.innerHTML = "새로운 단락입니다.";
+  document.body.insertBefore(newNode, criteriaNode);
+}
+```
