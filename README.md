@@ -113,7 +113,6 @@ Ajax를 이용하여 웹 페이지의 일부만을 갱신하려면 다양한 DOM
 따라서 DOM과 관련된 다양한 API를 이용하여 노드를 동적으로 생성하고, 조작할 수 있어야 한다
 
 ### 노드의 추가
-다음 메소드를 사용하면 특정 위치에 새로운 노드를 추가할 수 있다
 1. appendChild() : 새로운 노드를 해당 노드의 자식 노드 리스트에 맨 마지막 노드로 추가
 2. insertBefore() : 새로운 노드를 특정 노드 바로 앞에 추가
 3. insertData() : 텍스트 노드의 텍스트 데이터에 새로운 텍스트 추가
@@ -128,7 +127,6 @@ function appendNode()
 }
 ```
 ### 노드의 생성
-생설한 노드의 종류에 다라 다음과 같은 메소드를 사용할 수 있다
 1. createElement() : 새로운 요소 노드 생성
 2. createAttribute() : 새로운 속성 노드 생성
 3. createTextNode() : 새로운 텍스트 노드 생성
@@ -140,6 +138,164 @@ funciton createNode()
   var criteriaNode = document.getElementById("text"); // 기준이 되는 요소, 아이디가 text인 요소를 선택
   var newNode = document.createElement("p"); // 새로운 <p> 요소를 생성
   newNode.innerHTML = "새로운 단락입니다.";
-  document.body.insertBefore(newNode, criteriaNode);
+  document.body.insertBefore(newNode, criteriaNode); // 새로운 요소를 기준이 되는 요소 바로 앞에 추가
 }
 ```
+
+### 노드의 제거 
+1. removeChild() : 기존의 노드 리스트에서 특정 노드 제거
+2. removeAttribute() : 속성의 이름을 이용하여 특정 속성 노드 제거
+
+#### removeChild() 예제
+```javascript
+var parent = document.getElementsById("list") // 아이디가 list인 요소 선택
+var removedItem = document.getElementById("item") // 아이디가 "item"인 요소 선택
+parent.removeChild(removedItem); // 지정된 요소 삭제
+```
+
+### 노드의 복제
+1. cloneNode() : 특정 노드를 복제
+
+#### cloneNode() 예제
+```javascript
+function cloneElement()
+{
+  var parent = document.getElementsById("list"); // 아이디가 list인 요소 선택
+  var originItem = document.getElementsById("item"); // 아이디가 item인 요소 선택
+  parent.appendChild(originItem.cloneNode(true)); // 해당 노드를 복제하여 리스트의 맨 마지막에 추가
+}
+```
+
+### 노드의 값 변경
+1. nodeValue의 프로퍼티를 사용하면 특정 노드의 값을 변경할 수 있다
+2. setAttribute() : 속성 노드의 속성값을 변경할 수 있다
+
+#### nodeValue 예제
+```javascript
+var para = document.getElementById("text"); // 아이디가 text인 요소 선택
+funciton changeText()
+{
+  para.firstChild.nodeValue = "텍스트 변경 완료!";
+}
+```
+
+### 노드의 교체
+1. replaceChild() : 특정 노드 그자체를 다른 노드로 바꿀 수 있다
+
+#### replaceChild() 예제
+```javascript
+var parent = document.getElementsById("parent"); // 부모 노드 선택
+var first = document.getElementsById("first");
+var third = document.getElemnetsById("third");
+function changeNode()
+{
+  parent.replaceChild(third, first); // first 요소를 삭제하고, 그 대신 third 요소를 삽입
+}
+```
+
+## XMLHttpRequest 객체
+### XMLHttpRequest 객체
+- Ajax의 가장 핵심적인 구성 요소는 XMLHttpRequest객체이다
+- XMLHttpRequest객체는 웹 브라우저가 서버와 데이터를 교환할 때 사용된다
+
+### XMLHttpRequest 객체의 생성
+- 대부분의 주요 웹 브라우저는 XMLHttpRequest 객체를 내장하고 있다
+- 객체를 생성하는 방법은 브라우저의 종류에 따라 나뉜다
+
+1. XMLHttpRequest 
+  - IE7 이상의 버전, chrome, firefox, safari, opera에서 사용가능
+  ```javascript
+    var 변수이름 = new XMLHttpRequest();
+  ```
+2. ActiveXObject
+  - IE5, 6버전에서 사용
+  ```javascript
+    var 변수이름 = new ActiveXObject("Microsoft.XMLHTTP");
+  ```
+3. 모든 버전에서 XMLHttpRequest 인스턴스 생성 예제
+  ```javascript
+  var httpRequest;
+  function createRequest()
+  {
+    if(window.XMLHttpRequest)
+    {
+       return new XMLHttpRequest();
+    }
+    else
+    {
+      return new ActiveXObject("Microsoft.XMLHTTP");
+    }
+  }
+  ```
+4. IE7 이상 인스턴스 생성 예제
+  ```javascript
+    var httpRequest = new XMLHttpRequest();
+  ```
+  
+## 서버에 요청하기
+### 서버에 요청(request)하기
+- 서버에 요청을 보내기 위해 XMLHttpRequest 객체 생성
+- XMLHttpRequest 인스턴스의 open() 메소드와 send() 메소드를 사용하여 요청
+
+### open() 메소드
+- 서버로 보낼 Ajax 형식 설정
+```javascript
+open(전달방식, URL주소, 동기여부);
+```
+- 전달 방식 : GET 방식과 POST 방식 중 선택
+- URL 주소 : 요청을 처리할 서버의 파일 주소
+- 동기 여부 : 요청을 동기식으로 전달할지 비동기식으로 전달할지 전달
+
+### send() 메소드
+- 작성된 Ajax 요청을 서버로 전달
+- 전달 방식에 따라 인수를 안 가질 수도 있다
+```javascript
+send(); // GET방식
+send(문자열); // POST 방식
+```
+#### GET 방식과 POST 방식
+GET
+- 주소에 데이터를 추가하여 전달
+- HTTP요청이 브라우저에 의해 캐시되어 저장
+- 쿼리 문자열에 포함되어 전송, 길이의 제한이 있다
+- 보안상 취약, 중요한 데이터는 POST 방식 이용
+
+POST
+- 데이터를 별도로 첨부하여 전달
+- HTTP요청이 브라우저에 캐시되지 않음, 브라우저 히스토리에도 남지 않음
+- 쿼리 문자열과는 별도로 전송
+- 데이터의 길이에 제한이 없고 GET 방식보다 보안성이 높다
+
+#### GET 방식으로 요청예제
+- 서버로 전송하고자 하는 데이터는 URI에 포함되어 전송된다
+```javascript
+httpRequest.open("GET", "/example/request_ajax.php?city=seoul&zipcode=111", true)
+httpRequest.send();
+```
+
+#### POST 방식으로 요청예제
+- 서버로 전송하는 데이터는 HTTP 헤더에 포함되어 전송
+- setRequestHeader() 메소드를 이용하여 헤더를 작성한 후, send() 메소드로 데이터 전송
+```javascript
+httpRequest.open("POST", "/example/request_ajax.php", true)
+httpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+httpRequest.send("city=seoul&zipcode=111");
+```
+
+#### XMLHttpRequest 객체의 현재 상태와 서버 상의 문서 존재 유무 확인
+```javascript
+if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {}
+```
+- XMLHttpRequest.DONE : 서버에 요청한 데이터의 처리가 완료, 응답 준비 완료
+- status == 200 : 요청한 문서가 서버 상에 존재
+
+### 비동기식(asynchronous) 요청
+- 서버에 비동기식 요청 : open() 메소드의 세 번째 인수로 true를 전달한다
+- 서버로 비동기식 요청을 보내면, JS는 서버로부터의 응답을 기다리면서 동시에 다른 일을 할 수 있다
+
+- 서버에 동기식 요청 : open() 메소드의 세 번째 인수로 false를 전달한다
+- JS는 서버로부터 응답이 도착할 때까지 대기한다
+- 사용자는 대기하는 동안 다른 작업을 할 수 없게 된다
+
+## 서버로부터의 응답
+### 서버로부터의 응답(response) 확인
