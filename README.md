@@ -299,3 +299,60 @@ if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {
 
 ## 서버로부터의 응답
 ### 서버로부터의 응답(response) 확인
+- ajax에서 서버로부터의 응답을 확인하기 위한 객체의 속성
+	- readyState
+	- status
+	- onreadystatechange
+
+#### readyState 속성
+- XMLHttpRequest 객체의 현재 상태를 나타난대
+- 객체의 현재 상태에 따라 값이 다음과 같은 주기로 바뀐다
+	1. UNSENT (숫자0) : XMLHttpRequest 객체 생성
+	2. OPENED (숫자1) : open() 메소드 성공적으로 실행
+	3. HEADERS_RECEIVED (숫자2) : 모든 요청에 대한 응답이 도착
+	4. LOADING (숫자3) : 요청한 데이터를 처리 중임
+	5. DONE (숫자4) : 요청한 데이터의 처리가 완료되어 응답할 준비가 완료
+
+#### status 속성
+- 서버의 문서 상태를 나타낸다
+	- 200 : 서버에 문서가 존재
+	- 404 : 서버에 문서가 존재하지 않음
+
+
+#### onreadystatechange 속성
+- XMLHttpRequest 객체의 **readyState 속성 값이 변할 때**마다 **자동으로 호출되는 함수를 성정**
+- 서버에서 응답이 도착할 때까지 readyState 속성 값의 변화에 따라 총 **5번 호출**된다
+- 이 속성을 이용하면 **서버에 요청한 데이터가 존재**하고, **서버로부터 응답이 도착하는 순간**을 특정할 수 있다
+
+**예제**
+```javascript
+var httpRequest = new XMLHttpRequest();
+var httpRequest.onreadystatechange = function() 
+{
+  switch(httpRequest.readyState)
+  {
+    case XMLHttpRequest.UNSET:
+      currentState += "현재 XML객체의 상태는 UNSET <br>";
+          break;
+      case XMLHttpRequest.OPENED:
+        currentState += "현재 XML 객체의 상태는 OPENED <br>";
+        break;
+      case XMLHttpRequest.HEADERS_RECIEVED:
+        currentState += "현재 XML 객체의 상태는 HEADERS_RECIEVED <br>";    
+          break;
+      case XMLHttpRequest.LOADING:
+          currentState += "현재 XML 객체의 상태는 LOADING 입니다.<br>";
+          break;
+      case XMLHttpRequest.DONE:
+          currentState += "현재 XML 객체의 상태는 DONE 입니다.<br>";
+          break;
+  }
+}
+
+document.getElementsById("status").innerHTML = currentState;
+if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200)
+{
+	document.getElementsById("text").innerHTML = httpRequest.responseText;
+}
+```
+
