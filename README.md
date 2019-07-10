@@ -356,3 +356,116 @@ if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200)
 }
 ```
 
+## HTTP 요청 헤더
+### HTTP 헤더
+- 클라이언트와 서버 사이 이루어지는 HTTP 요청과 응답은 HTTP 헤더를 사용하여 수행된다
+- HTTP 요청 헤더 예제
+```http header
+Accept: */*
+Referer: http://codingsam.com/examples/tryit/tryhtml.php?filename=ajax_header_request_01
+Accept-Language: ko-KR
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: codingsam.com
+DNT: 1
+Connection: Keep-Alive
+```
+- 헤더는 이름, 콜론, 공백, 헤더 값의 순서로 구성된다
+- 일부 헤더는 요청과 응답에 모두 사용된다
+- 일반적으로 헤더는 사용자가 설정할 수 없다
+- Ajax를 사용하면 헤더를 직접 설정할 수 있고, 내용을 확인할 수 있다
+
+### HTTP 요청 헤더
+- Ajax에서 요청을 보내기 전 setRequestHeader() 메소드를 사용해 헤더를 작성할 수 있다
+- setRequestHeader() 문법
+``` XMLHttpRequest인스턴스.setRequestHeader(헤더이름, 헤더값);```
+- 헤더이름은 헤더에 포함하고자 하는 헤더의 이름이며, 값도 같이 전달한다
+- setRequestHeader() 예제
+```javascript
+var httpRequest = new XMLHttpRequest();
+httpRequest.onreadystatechange = function()
+{
+	if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200)
+	{
+		document.getElementsById("text").innerHTML = httpRequest.responseText;
+	}
+};
+httpRequest.open("GET", "/example/ajax_header.php", true);
+httpRequest.setRequestHeader("testheader", "123");
+httpRequest.send();
+```
+- ajax_header.php
+```php
+<?php // HTTP 요청 헤더의 이름과 값을 모두 출력
+	header("Content-Type: text/plain");
+	$requestHeaders = apache_request_headers();
+	foreach ($requestHeaders as $requestHeaders => $value)
+	{
+		echo nl2br("$requestHeaders: $value\n");
+	}
+?>
+```
+- HTTP 규약에서 사용하는 헤더 이름은 모두 첫 글자가 영문 대문자이다
+
+## HTTP 응답 헤더
+### HTTP 응답 헤더
+- Ajax에서는 서버에서 전달받은 HTTP 응답 헤더 내용을 다음 메소드를 이용하여 확인할 수 있다
+	1. getAllResponseHeaders() : HTTP 응답 헤더의 모든 헤더를 문자열로 반환
+	2. getResponseHeader() : HTTP 응답 헤더 중 인수로 전달받은 이름과 일치하는 헤더의 값을 문자열로 반환
+	3. 예제
+```javascript
+var httpRequest = new XMLHttpRequest();
+httpRequest.onreadystatechange = function()
+{
+	if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200)
+	{
+		document.getElementsById("text").innerHTML = httpRequest.responseText;
+		document.getElementsById("header").innerHTML = httpRequest.getAllResponseHeaders();
+		document.getElementsById("user").innerHTML = httpRequest.getResponseHeader("testheader");
+	}
+}
+httpRequest.open("GET", "/example/ajax_header.php", true);
+httpRequest.send();
+``` 
+- ajax_header.php
+```php
+<?php
+	header("testheader: 123");
+?>
+<p id="ajax_text"> Ajax에서는 서버로부터 전달받은 HTTP응답 헤더의 내용을 확인할 수 있다 </p>
+```
+- 위의 예제처럼 PHP파일에서 header()함수를 사용하여 HTTP 응답 헤더를 직접 작성하여 전달할 수 있다
+- header() 함수를 사용할 때 헤더의 이름과 콜론 사이에 공백을 사용하면 안된다
+- 콜론 다음에 사용된 첫 번째 공백은 무시된다
+
+### Content-Type 헤더
+- Content-Type 헤더의 값을 설정하지 않으면 **text/html로 설정**된다
+- Ajax에서 다루는 XML은 파일 형태의 XML문서가 아닌 **서버에서 동적으로 생성되는 XML형태의 데이터**이다
+- 데이터의 확장자가 .xml이 아니므로 header() 함수를 사용하여 **응답 데이터의 MIME타입이 text/xml이라고 명시**해야 한다
+- 예제
+```javascript
+var httpRequest = new XMLHttpRequest();
+httpRequest.onreadystatechange = function()
+{
+	if(httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200)
+	{
+		document.getElementsById("text").innerHTML = httpRequest.responseText;
+		document,getElementsById("header").innerHTML = httpRequest.getAllResponseHeaders();
+		document.getElementsById("user").innerHTML = "testheader: " + httpRequest.getResponseHeader("testheader");
+	}
+}
+httpRequest.open("GET", "/example/ajax_header.php", true);
+httpRequest.send();
+```
+- ajax_header.php
+```php
+<?php
+	header("testheader", "123");
+	header("Content-Type: text/xml");
+	echo("<?xml version\"1.0\" encoding=\"UTF-8\"?> \n);
+?>
+<message>
+	Ajax에서는 서버로부터 전달받은 HTTP 응답 헤더의 내용을 확인할 수 있다
+</message>
+```
+
